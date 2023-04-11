@@ -4,6 +4,12 @@ import { View } from "react-native";
 import MapView, { Marker, Circle, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import { StyleSheet } from "react-native";
+import {
+  ChatBubbleLeftIcon,
+  HandThumbUpIcon,
+  MapPinIcon,
+  ShareIcon,
+} from "react-native-heroicons/solid";
 
 function generateRandomCoordinates(center, radius) {
   const y0 = center.latitude;
@@ -31,6 +37,48 @@ const CustomCallout = ({ title, description }) => {
     <View style={styles.calloutContainer}>
       <Text style={styles.calloutTitle}>{title}</Text>
       <Text style={styles.calloutDescription}>{description}</Text>
+    </View>
+  );
+};
+
+const SharedPostPane = () => {
+  return (
+    <View
+      className="flex flex-col bg-blue-200 rounded-xl mt-10"
+      style={{ height: 400 }}
+    >
+      <Text className="text-3xl pl-2">SHARED POST</Text>
+
+      {/* image */}
+      <View className="bg-red-500 h-" style={{ height: "50%" }}></View>
+
+      {/* content below image */}
+      <View className="flex flex-col flex-1">
+        {/* type and distance */}
+        <View className="flex flex-row items-center justify-between">
+          <View className="flex flex-row items-center">
+            <Text>Collision</Text>
+          </View>
+
+          <View className="flex flex-row items-center">
+            <MapPinIcon color="rgb(246,246,246)" />
+            <Text>1.1 miles away</Text>
+          </View>
+        </View>
+
+        <Text className="font-bold">No traction on icy Trinity Road</Text>
+
+        <Text numberOfLines={undefined} ellipsizeMode="tail">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id
+          sagittis dolor. Aliquam arcu...
+        </Text>
+
+        <View className="flex flex-row flex-1">
+          <HandThumbUpIcon />
+          <ChatBubbleLeftIcon />
+          <ShareIcon />
+        </View>
+      </View>
     </View>
   );
 };
@@ -112,6 +160,7 @@ export default function ActivityMapScreen() {
           </Marker>
         )}
       </MapView>
+      <SharedPostPane />
     </View>
   );
 }
