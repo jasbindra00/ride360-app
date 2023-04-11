@@ -7,6 +7,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./screens/LoginScreen";
 import ActivityMapScreen from "./screens/ActivityMapScreen";
 import HomeScreen from "./screens/HomeScreen";
+import RideDetailsScreen from "./screens/RideDetailsScreen";
 
 function NotificationsScreen({ navigation }) {
   return (
@@ -45,6 +46,7 @@ export default function App() {
             headerShown: false,
           }}
         />
+        <Stack.Screen name="RideDetails" component={RideDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

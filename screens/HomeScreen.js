@@ -1,42 +1,33 @@
 import React from "react";
 import { ScrollView } from "react-native";
+import { Image } from "react-native";
 import { ImageBackground } from "react-native";
 import { StyleSheet } from "react-native";
 import { Text } from "react-native";
 import { View } from "react-native";
+import { ArrowRightCircleIcon } from "react-native-heroicons/solid";
+import HelmetCard from "../components/HelmetCard";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     flexDirection: "column",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     // backgroundColor: "rgba(255,0,0,1)",
   },
-  background: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 50, // Change this value to adjust the roundness
-    overflow: "hidden",
+
+  ride: {
+    backgroundColor: "rgb(246,246,246)",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
   },
-  ride: {},
 });
 
-const redCardbg = require("../assets/logo_render_contour.png");
-
-const HelmetCard = ({ helmetID }) => {
-  return (
-    <View className="rounded-2xl mb-8">
-      <Text className="text-xl mb-2">RIDE360 HELMET {helmetID}</Text>
-      <ImageBackground
-        className="h-52 rounded-3xl"
-        source={redCardbg}
-        style={styles.background}
-      ></ImageBackground>
-    </View>
-  );
-};
+const redCardbg = require("../assets/logo_render.png");
 
 const HelmetCollection = () => {
   return (
@@ -47,12 +38,49 @@ const HelmetCollection = () => {
   );
 };
 
-const Ride = () => {
-  return <View className="w-auto bg-black"></View>;
-};
-const RideHistory = () => {
+const Ride = ({
+  helmetID = "AZ2481",
+  rideDate = "12/03/23",
+  rideTime = "12:09 - 13:21",
+}) => {
+  navigation = useNavigation();
+
   return (
-    <View className="flex flex-col bg-red-200 flex-1">
+    <TouchableOpacity
+      className="w-full h-14  mb-2 rounded-md flex flex-row items-center justify-between"
+      style={styles.ride}
+      onPress={() => {
+        navigation.navigate("RideDetails");
+      }}
+    >
+      <View style={{ width: "20%" }}>
+        <Image
+          source={redCardbg}
+          resizeMode="contain"
+          style={{ flex: 1, width: undefined, height: "100%" }}
+        ></Image>
+      </View>
+      <View
+        style={{ flexGrow: 1 }}
+        className="flex flex-row items-center justify-between mx-2"
+      >
+        <Text>
+          {helmetID}• {rideDate}•{rideTime}
+        </Text>
+        <ArrowRightCircleIcon color="black" />
+      </View>
+    </TouchableOpacity>
+  );
+};
+const RideHistory = ({}) => {
+  return (
+    <View className="p-2">
+      <Text className="mb-5 text-3xl">RIDE HISTORY</Text>
+      <Ride />
+      <Ride />
+      <Ride />
+      <Ride />
+      <Ride />
       <Ride />
     </View>
   );
