@@ -99,7 +99,15 @@ const SharedPostPane = () => {
 };
 
 const CollisionDetectionPane = () => {
-  return <></>;
+  return (
+    <View className="flex flex-col mt-12">
+      <Text>COLLISION DETECTION</Text>
+      <RideSpecific keyz={"NUMBER PLATE"} value={"BD51 SMR"} />
+      <RideSpecific keyz={"VEHICLE MAKE"} value={"FORD"} />
+      <RideSpecific keyz={"VEHICLE MODEL"} value={"FIESTA"} />
+      <RideSpecific keyz={"INSURANCE COMPANY"} value={"UInsure"} />
+    </View>
+  );
 };
 
 function RideDetailsScreen() {
@@ -119,6 +127,7 @@ function RideDetailsScreen() {
       <HelmetCard helmetID={propz.helmetID} />
       <RideSpecificsPane {...propz} />
       <SharedPostPane />
+      <CollisionDetectionPane />
     </ScrollView>
   );
 }
