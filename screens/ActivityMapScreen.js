@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import MapView, { Marker, Circle, Callout } from "react-native-maps";
 import * as Location from "expo-location";
@@ -10,6 +10,53 @@ import {
   MapPinIcon,
   ShareIcon,
 } from "react-native-heroicons/solid";
+import { ImageBackground } from "react-native";
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+    alignItems: "center",
+    // borderTopEndRadius: 50,
+    // borderRadius: 50, // Change this value to adjust the roundness
+    overflow: "hidden",
+    // height: "50%",
+  },
+  container: {
+    flex: 1,
+    position: "relative",
+  },
+  map: {
+    flex: 1,
+  },
+});
+
+const clipPNG = require("../assets/Clip.png");
+
+const GetDistanceBetweenCoordinates = (coord1, coord2) => {
+  var R = 6371; // km
+  var dLat = toRad(coord2.latitude - coord1.latitude);
+  var dLon = toRad(coord2.longitude - coord1.longitude);
+  var lat1 = toRad(coord1.latitude);
+  var lat2 = toRad(coord2.latitude);
+
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+  return d;
+};
+
+// Converts numeric degrees to radians
+function toRad(Value) {
+  return (Value * Math.PI) / 180;
+}
+
+function toRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
 
 function generateRandomCoordinates(center, radius) {
   const y0 = center.latitude;
@@ -41,45 +88,89 @@ const CustomCallout = ({ title, description }) => {
   );
 };
 
-const SharedPostPane = () => {
+const SharedPostPane = ({ ...props }) => {
   return (
-    <View
-      className="flex flex-col bg-blue-200 rounded-xl mt-10"
-      style={{ height: 400 }}
+    <ScrollView
+      className="flex flex-col bg-trans rounded-xl overflow-scroll p-2"
+      style={{ backgroundColor: "rgb(246,246,246)" }}
     >
-      <Text className="text-3xl pl-2">SHARED POST</Text>
+      <View className="flex flex-row items-center gap-1">
+        <Text
+          style={{ fontFamily: "MontserratBlack" }}
+          className="text-2xl pl-2"
+        >
+          SHARED POST
+        </Text>
+        <Text style={{ fontFamily: "MontserratRegular" }} className="text-xs">
+          by {props.username}
+        </Text>
+      </View>
 
       {/* image */}
-      <View className="bg-red-500 h-" style={{ height: "50%" }}></View>
+      <View className="h-48" style={{}}>
+        <ImageBackground
+          className="rounded-3xl"
+          source={clipPNG}
+          style={styles.background}
+        ></ImageBackground>
+      </View>
 
       {/* content below image */}
       <View className="flex flex-col flex-1">
         {/* type and distance */}
         <View className="flex flex-row items-center justify-between">
           <View className="flex flex-row items-center">
-            <Text>Collision</Text>
+            <Text style={{ fontFamily: "MontserratBlack" }}>
+              {props.eventType}
+            </Text>
           </View>
 
           <View className="flex flex-row items-center">
             <MapPinIcon color="rgb(246,246,246)" />
-            <Text>1.1 miles away</Text>
+            <Text style={{ fontFamily: "MontserratBold" }}>
+              {props.distance + " km away"}
+            </Text>
           </View>
         </View>
 
-        <Text className="font-bold">No traction on icy Trinity Road</Text>
-
-        <Text numberOfLines={undefined} ellipsizeMode="tail">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id
-          sagittis dolor. Aliquam arcu...
+        <Text
+          style={{ fontFamily: "MontserratExtraBold" }}
+          className="font-bold"
+        >
+          {props.title}
         </Text>
 
-        <View className="flex flex-row flex-1">
-          <HandThumbUpIcon />
-          <ChatBubbleLeftIcon />
+        <Text
+          style={{ fontFamily: "MontserratRegular" }}
+          numberOfLines={undefined}
+          ellipsizeMode="tail"
+        >
+          {props.description}
+        </Text>
+
+        <View className="flex flex-row flex-1  gap-x-5 mt-3">
+          <TouchableOpacity>
+            <View className="flex flex-row items-center">
+              <HandThumbUpIcon />
+              <Text style={{ fontFamily: "MontserratRegular" }}>
+                {props.num_likes}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+            <View className="flex flex-row items-center">
+              <ChatBubbleLeftIcon />
+              <Text style={{ fontFamily: "MontserratRegular" }}>
+                {props.num_comments}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
           <ShareIcon />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -87,40 +178,76 @@ export default function ActivityMapScreen() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
+  const [markerArray, setMarkerArray] = useState([]);
   const RADIUS = 600;
-  const RandomMarkers = [];
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
+  const [eventsArray, setEventsArray] = useState([
+    {
+      username: "Alex Z (AZ4281)",
+      coordinates: { longitude: 2, latitude: 2 },
+      distance: 2,
+      eventType: "Collision",
+      title: "No traction on icy roads",
+      description:
+        "It's been pretty cold and icy for the last few days and the council haven't bothered to lay grit salt down again..",
+      time_posted: "2 hours ago",
+      num_likes: 25,
+      num_comments: 10,
+    },
+    {
+      username: "Jas B (JB111)",
+      distance: 2,
+      eventType: "Accident",
+      title: "Traffic lights on White Hart roundabout are not working",
+      description:
+        "Got into a front size accident as the traffic lights are down on the roundabout!",
+      time_posted: "10 hours ago",
+      num_likes: 50,
+      num_comments: 61,
+    },
+  ]);
 
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      console.log(currentLocation);
+  const [activeEvent, setActiveEvent] = useState(eventsArray[0]);
+  // initialise distance
 
-      for (let i = 0; i < 3; ++i) {
-        RandomMarkers.push(
-          generateRandomCoordinates(currentLocation.coords, RADIUS)
-        );
-      }
-    })();
-  }, []);
+  const FetchLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+    } else {
+    }
 
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
+    markerarr_tmp = [];
+
+    let currentLocation = await Location.getCurrentPositionAsync({});
+    setLocation(currentLocation);
+    for (var j = 0; j < eventsArray.length; ++j) {
+      randomCoord = generateRandomCoordinates(currentLocation.coords, RADIUS);
+      markerarr_tmp.push(randomCoord);
+      eventsArray[j].coordinates = randomCoord;
+
+      distance = GetDistanceBetweenCoordinates(
+        currentLocation.coords,
+        randomCoord
+      );
+      console.log(distance);
+      eventsArray[j].distance = Math.round(distance * 100) / 100;
+    }
+    setMarkerArray(markerarr_tmp);
+  };
+
+  useEffect(
+    () => {
+      FetchLocation();
+    },
+
+    //   setMarkerArray(markerarr_tmp);
+    []
+  );
 
   return (
     <View style={styles.container}>
       <MapView
-        provider="google"
         style={styles.map}
         initialRegion={{
           latitude: location ? location.coords.latitude : 37.78825,
@@ -154,22 +281,15 @@ export default function ActivityMapScreen() {
           />
         )}
 
-        {location && (
-          <Marker coordinate={generateRandomCoordinates(location.coords, 600)}>
-            {RandomMarkers}
-          </Marker>
-        )}
+        {markerArray.map((coord, index) => (
+          <Marker key={index} coordinate={coord} />
+        ))}
       </MapView>
-      <SharedPostPane />
+      <View className="bg-transparent absolute bottom-0 w-full h-1/2 px-4">
+        <View className="w-full h-full bg-blue-100 rounded-2xl">
+          <SharedPostPane {...activeEvent} />
+        </View>
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  map: {
-    flex: 1,
-  },
-});

@@ -86,7 +86,6 @@ const RideSpecificsPane = ({
   rideTimeEnd,
   rideDuration,
 }) => {
-  console.log(GetDuration(rideTimeStart, rideTimeEnd));
   return (
     <View className="flex flex-col mt-1">
       <RideSpecific keyz={"HELMET ID"} value={helmetID} />
@@ -165,7 +164,6 @@ const CollisionDetectionPane = () => {
 
 function RideDetailsScreen({ route }) {
   const props = route.params;
-  console.log(props);
 
   return (
     <ScrollView
