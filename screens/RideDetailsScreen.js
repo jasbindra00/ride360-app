@@ -9,6 +9,28 @@ import { MapPinIcon } from "react-native-heroicons/solid";
 import { HandThumbUpIcon } from "react-native-heroicons/solid";
 import { ChatBubbleOvalLeftIcon } from "react-native-heroicons/solid";
 import { ShareIcon } from "react-native-heroicons/solid";
+import { ImageBackground } from "react-native";
+import { useFonts } from "expo-font";
+
+const clipPNG = require("../assets/Clip.png");
+
+const GetDuration = (startTime, endTime) => {
+  const [startHour, startMinute] = startTime.split(":");
+  const [endHour, endMinute] = endTime.split(":");
+
+  const startDate = new Date();
+  startDate.setHours(startHour);
+  startDate.setMinutes(startMinute);
+
+  const endDate = new Date();
+  endDate.setHours(endHour);
+  endDate.setMinutes(endMinute);
+
+  const durationMs = endDate.getTime() - startDate.getTime();
+  const durationMinutes = durationMs / 60000; // 1 minute = 60000 milliseconds
+
+  return Math.round(durationMinutes) + " minutes";
+};
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -19,22 +41,40 @@ const styles = StyleSheet.create({
   },
 
   specific: {
-    backgroundColor: "rgb(246,246,246)",
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
+    // backgroundColor: "rgb(246,246,246)",
+    // shadowColor: "black",
+    // shadowOffset: { width: 0, height: 0 },
+    // shadowOpacity: 0.5,
+    // shadowRadius: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0,0,0,0.1)",
+    fontFamily: "MontserratBold",
+  },
+  background: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+    alignItems: "center",
+    // borderTopEndRadius: 50,
+    // borderRadius: 50, // Change this value to adjust the roundness
+    overflow: "hidden",
+    // height: "50%",
   },
 });
 
 const RideSpecific = ({ keyz, value }) => {
   return (
     <View
-      className="flex flex-row justify-between items-center p-2 bg-black mb-2 h-14"
+      className="flex flex-row justify-between items-center p-2  mb-2 h-14"
       style={styles.specific}
     >
-      <Text>{keyz}</Text>
-      <Text className="text-gray-400">{value}</Text>
+      <Text style={{ fontFamily: "MontserratBlack" }}>{keyz}</Text>
+      <Text
+        style={{ fontFamily: "MontserratRegular" }}
+        className="text-gray-400"
+      >
+        {value}
+      </Text>
     </View>
   );
 };
@@ -46,86 +86,94 @@ const RideSpecificsPane = ({
   rideTimeEnd,
   rideDuration,
 }) => {
+  console.log(GetDuration(rideTimeStart, rideTimeEnd));
   return (
-    <View className="flex flex-col mt-10">
+    <View className="flex flex-col mt-1">
       <RideSpecific keyz={"HELMET ID"} value={helmetID} />
       <RideSpecific keyz={"DATE"} value={rideDate} />
       <RideSpecific keyz={"TIME"} value={rideTimeStart + "-" + rideTimeEnd} />
-      <RideSpecific keyz={"DURATION"} value={rideDuration} />
+      <RideSpecific
+        keyz={"DURATION"}
+        value={GetDuration(rideTimeStart, rideTimeEnd)}
+      />
     </View>
   );
 };
 
 const SharedPostPane = () => {
   return (
-    <View
-      className="flex flex-col bg-blue-200 rounded-xl mt-10"
-      style={{ height: 400 }}
-    >
-      <Text className="text-3xl pl-2">SHARED POST</Text>
+    <>
+      <Text style={{ fontFamily: "MontserratExtraBold" }} className="text-2xl">
+        RIDE360 FOOTAGE
+      </Text>
 
-      {/* image */}
-      <View className="bg-red-500 h-" style={{ height: "50%" }}></View>
-
-      {/* content below image */}
-      <View className="flex flex-col flex-1">
-        {/* type and distance */}
-        <View className="flex flex-row items-center justify-between">
-          <View className="flex flex-row items-center">
-            <Text>Collision</Text>
-          </View>
-
-          <View className="flex flex-row items-center">
-            <MapPinIcon color="rgb(246,246,246)" />
-            <Text>1.1 miles away</Text>
-          </View>
-        </View>
-
-        <Text className="font-bold">No traction on icy Trinity Road</Text>
-
-        <Text numberOfLines={undefined} ellipsizeMode="tail">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent id
-          sagittis dolor. Aliquam arcu...
-        </Text>
-
-        <View className="flex flex-row flex-1">
-          <HandThumbUpIcon />
-          <ChatBubbleOvalLeftIcon />
+      <View className="flex flex-col  rounded-xl mt-5" style={{ height: 200 }}>
+        <ImageBackground
+          className="rounded-3xl"
+          source={clipPNG}
+          style={styles.background}
+        ></ImageBackground>
+      </View>
+      <View className="flex flex-row">
+        <View>
           <ShareIcon />
         </View>
       </View>
-    </View>
+    </>
   );
 };
 
 const CollisionDetectionPane = () => {
   return (
-    <View className="flex flex-col mt-12">
-      <Text>COLLISION DETECTION</Text>
-      <RideSpecific keyz={"NUMBER PLATE"} value={"BD51 SMR"} />
-      <RideSpecific keyz={"VEHICLE MAKE"} value={"FORD"} />
-      <RideSpecific keyz={"VEHICLE MODEL"} value={"FIESTA"} />
-      <RideSpecific keyz={"INSURANCE COMPANY"} value={"UInsure"} />
+    <View className="mt-5">
+      <Text style={{ fontFamily: "MontserratExtraBold" }} className="text-2xl">
+        COLLISION DETECTION
+      </Text>
+
+      <View className="flex flex-col">
+        <View
+          className="flex flex-row justify-between items-center mb-2 h-14"
+          style={styles.specific}
+        >
+          <Text style={{ fontFamily: "MontserratBlack" }}>
+            {"NUMBER PLATE"}
+          </Text>
+          <View
+            className="p-1 rounded-md w-1/2"
+            style={{ backgroundColor: "rgb(255,204,0)" }}
+          >
+            <View
+              style={{ borderWidth: 1 }}
+              className="h-4/5 flex flex-col justify-center items-center rounded-md"
+            >
+              <Text
+                className="text-2xl"
+                style={{ fontFamily: "UKNumberPlate" }}
+              >
+                BD51 SMR
+              </Text>
+            </View>
+          </View>
+        </View>
+        <RideSpecific keyz={"VEHICLE MAKE"} value={"FORD"} />
+        <RideSpecific keyz={"VEHICLE MODEL"} value={"FIESTA"} />
+        <RideSpecific keyz={"INSURANCE COMPANY"} value={"UInsure"} />
+      </View>
     </View>
   );
 };
 
-function RideDetailsScreen() {
-  const propz = {
-    cardPNGname: "png",
-    helmetID: "helmetID",
-    rideDate: "rideDate",
-    rideTimeStart: "startime",
-    rideTimeEnd: "endtime",
-    rideDuration: "duration",
-  };
+function RideDetailsScreen({ route }) {
+  const props = route.params;
+  console.log(props);
+
   return (
     <ScrollView
       className="w-full h-full flex flex-col"
       style={styles.contentContainer}
     >
-      <HelmetCard helmetID={propz.helmetID} />
-      <RideSpecificsPane {...propz} />
+      <HelmetCard {...props} />
+      <RideSpecificsPane {...props} />
       <SharedPostPane />
       <CollisionDetectionPane />
     </ScrollView>

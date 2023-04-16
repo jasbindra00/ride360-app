@@ -10,6 +10,11 @@ import HomeScreen from "./screens/HomeScreen";
 import RideDetailsScreen from "./screens/RideDetailsScreen";
 import { useFonts } from "expo-font";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { HomeIcon } from "react-native-heroicons/solid";
+import { MapPinIcon } from "react-native-heroicons/solid";
+import { UserIcon } from "react-native-heroicons/solid";
+import { Text } from "react-native";
+import Testing from "./components/Testing";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -17,29 +22,39 @@ const Tab = createBottomTabNavigator();
 
 function Root() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Activity Map" component={ActivityMapScreen} />
+    <Tab.Navigator screenOptions={{}}>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: (props) => {
+            return <HomeIcon size={24} />;
+          },
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Activity Map"
+        component={ActivityMapScreen}
+        options={{
+          tabBarIcon: (props) => {
+            return <MapPinIcon size={24} />;
+          },
+          headerShown: false,
+        }}
+      />
     </Tab.Navigator>
   );
 }
 
-// function Root() {
-//   return (
-//     <Drawer.Navigator>
-//       <Drawer.Screen name="Home" component={HomeScreen} />
-//       <Drawer.Screen name="Activity Map" component={ActivityMapScreen} />
-//     </Drawer.Navigator>
-//   );
-// }
-
 export default function App() {
   const [loaded] = useFonts({
     MontserratBold: require("./assets/fonts/MontserratBold.ttf"),
-    MonserratExtraBold: require("./assets/fonts/MontserratExtraBold.ttf"),
-    MonserratBlack: require("./assets/fonts/MontserratBlack.ttf"),
-    MonserratRegular: require("./assets/fonts/MontserratRegular.ttf"),
-    MonserratLight: require("./assets/fonts/MontserratLight.ttf"),
+    MontserratExtraBold: require("./assets/fonts/MontserratExtraBold.ttf"),
+    MontserratBlack: require("./assets/fonts/MontserratBlack.ttf"),
+    MontserratRegular: require("./assets/fonts/MontserratRegular.ttf"),
+    MontserratLight: require("./assets/fonts/MontserratLight.ttf"),
+    UKNumberPlate: require("./assets/fonts/UKNumberPlate.ttf"),
   });
   if (loaded) {
     console.log("done");

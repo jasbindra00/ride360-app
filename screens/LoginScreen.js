@@ -6,11 +6,10 @@ import { SafeAreaView } from "react-native";
 import { Button } from "react-native";
 import { Text, View } from "react-native";
 import { ImageBackground, StyleSheet, ActivityIndicator } from "react-native";
+import { useFonts } from "expo-font";
 
 const background = require("../assets/login.jpg");
 const logo = require("../assets/logo_render.png");
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   container: {
@@ -38,17 +37,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const LoginModal = () => {
-  return <></>;
-};
-
 export default function LoginScreen({ navigation }) {
   [hasRendered, setHasRendered] = useState(false);
 
   useEffect(() => {
     const tim = setTimeout(() => {
       navigation.navigate("Root");
-    }, 20000);
+    }, 2000);
 
     setHasRendered(true);
     return () => clearTimeout(tim);
