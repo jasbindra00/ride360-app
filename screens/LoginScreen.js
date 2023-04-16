@@ -1,11 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity } from "react-native";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native";
 import { Button } from "react-native";
 import { Text, View } from "react-native";
-import { ImageBackground, StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet, ActivityIndicator } from "react-native";
 
 const background = require("../assets/login.jpg");
 const logo = require("../assets/logo_render.png");
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    alignContent: "center",
+    // alignContent: "center",
 
     // backgroundColor:"rgba(255,0,0,1)"
     // marginHorizontal: 16,
@@ -43,6 +43,21 @@ const LoginModal = () => {
 };
 
 export default function LoginScreen({ navigation }) {
+  [hasRendered, setHasRendered] = useState(false);
+
+  useEffect(() => {
+    const tim = setTimeout(() => {
+      navigation.navigate("Root");
+    }, 20000);
+
+    setHasRendered(true);
+    return () => clearTimeout(tim);
+  }, [hasRendered]);
+
+  const handleRendered = () => {
+    setHasRendered(true);
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground source={background} style={styles.background}>
@@ -50,14 +65,17 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.logoContainer}>
             <Image source={logo} style={styles.logo} />
           </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Root");
-            }}
+          <View
+            onLayout={handleRendered}
+            className="flex-grow items-center justify-end gap-4"
           >
-            <Text className="text-white mx-auto">CONTINUE</Text>
-          </TouchableOpacity>
+            <View className="bg-red-300 p-4 rounded-md " style={{}}>
+              <Text style={{ fontFamily: "MontserratBold" }} className="mb-2">
+                LOGGING IN...
+              </Text>
+              <ActivityIndicator size="large" color="red" />
+            </View>
+          </View>
         </SafeAreaView>
       </ImageBackground>
     </View>
