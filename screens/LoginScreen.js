@@ -43,7 +43,7 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     const tim = setTimeout(() => {
       navigation.navigate("Root");
-    }, 500);
+    }, 5000);
 
     setHasRendered(true);
     return () => clearTimeout(tim);

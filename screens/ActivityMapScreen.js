@@ -23,11 +23,30 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     // height: "50%",
   },
+  callout: {
+    backgroundColor: "white",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 4,
+  },
   container: {
     flex: 1,
     position: "relative",
   },
   map: {
+    flex: 1,
+  },
+  title: {
+    color: "black",
+    fontSize: 14,
+    lineHeight: 18,
+    flex: 1,
+  },
+  description: {
+    color: "#707070",
+    fontSize: 12,
+    lineHeight: 16,
     flex: 1,
   },
 });
@@ -205,6 +224,39 @@ export default function ActivityMapScreen() {
       num_likes: 50,
       num_comments: 61,
     },
+    {
+      username: "Henry E (JB111)",
+      distance: 2,
+      eventType: "Accident",
+      title: "Traffic lights on White Hart roundabout are not working",
+      description:
+        "Got into a front size accident as the traffic lights are down on the roundabout!",
+      time_posted: "10 hours ago",
+      num_likes: 50,
+      num_comments: 61,
+    },
+    {
+      username: "Jivraj D (JD234)",
+      distance: 2,
+      eventType: "Collision",
+      title: "Got hit by a car!",
+      description:
+        "There's a blindspot near the Ossie Garvin roundabout where cars can't see cyclists.",
+      time_posted: "1 hour ago",
+      num_likes: 16,
+      num_comments: 2,
+    },
+    {
+      username: "Radin O (RO134)",
+      distance: 2,
+      eventType: "Accident",
+      title: "Slippery Road ",
+      description:
+        "There's some sort of oil or petrol on the road which made my tyres slip. Be careful.",
+      time_posted: "1 hour ago",
+      num_likes: 8,
+      num_comments: 1,
+    },
   ]);
 
   const [activeEvent, setActiveEvent] = useState(eventsArray[0]);
@@ -263,14 +315,7 @@ export default function ActivityMapScreen() {
         }}
       >
         {location && (
-          <Marker coordinate={location.coords}>
-            <Callout tooltip onPress={() => alert("Marker clicked")}>
-              <CustomCallout
-                title={"testingtitle"}
-                description={"testingdesc"}
-              />
-            </Callout>
-          </Marker>
+          <Marker coordinate={location.coords} showCallout={true}></Marker>
         )}
         {location && (
           <Circle
@@ -282,7 +327,29 @@ export default function ActivityMapScreen() {
         )}
 
         {markerArray.map((coord, index) => (
-          <Marker key={index} coordinate={coord} />
+          <Marker
+            key={index}
+            coordinate={coord}
+            showCallout={true}
+            title={"testing"}
+            description={"testingdesc"}
+            onPress={() => {
+              setActiveEvent(eventsArray[index]);
+            }}
+          >
+            <Callout
+              onPress={() => {
+                setActiveEvent(eventsArray[index]);
+              }}
+            >
+              <Text style={{ fontFamily: "MontserratBlack" }}>
+                {eventsArray[index].eventType}
+              </Text>
+              <Text style={{ fontFamily: "MontserratRegular" }}>
+                {eventsArray[index].username}
+              </Text>
+            </Callout>
+          </Marker>
         ))}
       </MapView>
       <View className="bg-transparent absolute bottom-0 w-full h-1/2 px-4">
