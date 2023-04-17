@@ -12,9 +12,13 @@ import { useFonts } from "expo-font";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { HomeIcon } from "react-native-heroicons/solid";
 import { MapPinIcon } from "react-native-heroicons/solid";
+import { GlobeAltIcon } from "react-native-heroicons/solid";
 import { UserIcon } from "react-native-heroicons/solid";
+import { Cog6ToothIcon } from "react-native-heroicons/solid";
 import { Text } from "react-native";
 import Testing from "./components/Testing";
+import PlansScreen from "./screens/PlansScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -43,6 +47,26 @@ function Root() {
           headerShown: false,
         }}
       />
+      <Tab.Screen
+        name="Plans"
+        component={PlansScreen}
+        options={{
+          tabBarIcon: (props) => {
+            return <GlobeAltIcon size={24} />;
+          },
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: (props) => {
+            return <Cog6ToothIcon size={24} />;
+          },
+          headerShown: false,
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -56,9 +80,6 @@ export default function App() {
     MontserratLight: require("./assets/fonts/MontserratLight.ttf"),
     UKNumberPlate: require("./assets/fonts/UKNumberPlate.ttf"),
   });
-  if (loaded) {
-    console.log("done");
-  }
 
   return (
     <NavigationContainer>
